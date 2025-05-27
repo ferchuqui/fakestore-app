@@ -31,10 +31,25 @@ export default function CartPage() {
             key={i}
             className="list-group-item d-flex justify-content-between align-items-center"
           >
-            <div>
-              <strong>{item.title}</strong><br />
-              Precio unitario: ${item.price}<br />
-              Cantidad: {item.quantity}
+            <div className="d-flex align-items-center gap-3">
+              <img
+                src={item.images?.[0] || item.image || 'https://via.placeholder.com/60'}
+                alt={item.title}
+                style={{
+                  width: '60px',
+                  height: '60px',
+                  objectFit: 'cover',
+                  borderRadius: '8px'
+                }}
+              />
+              <div>
+                <strong>{item.title}</strong><br />
+                Precio unitario: ${item.price}<br />
+                Cantidad: {item.quantity}<br />
+                <span className="text-muted">
+                  Subtotal: ${item.price * item.quantity}
+                </span>
+              </div>
             </div>
             <div className="btn-group">
               <button
@@ -59,7 +74,11 @@ export default function CartPage() {
         <h4 className="text-success">${total.toFixed(2)}</h4>
       </div>
 
-      <div className="text-end">
+      <div className="d-flex justify-content-between">
+        <button className="btn btn-outline-danger" onClick={clearCart}>
+          Vaciar carrito
+        </button>
+
         <button className="btn btn-primary" onClick={handleCheckout}>
           Finalizar compra
         </button>
