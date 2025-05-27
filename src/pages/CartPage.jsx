@@ -3,10 +3,10 @@ import { CartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart } = useContext(CartContext);
+  const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
   const navigate = useNavigate();
 
-  const total = cart.reduce((acc, item) => acc + item.price, 0);
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
     clearCart();
@@ -32,14 +32,24 @@ export default function CartPage() {
             className="list-group-item d-flex justify-content-between align-items-center"
           >
             <div>
-              {item.title} <span className="text-muted">(${item.price})</span>
+              <strong>{item.title}</strong><br />
+              Precio unitario: ${item.price}<br />
+              Cantidad: {item.quantity}
             </div>
-            <button
-              className="btn btn-sm btn-danger"
-              onClick={() => removeFromCart(item.id)}
-            >
-              Eliminar
-            </button>
+            <div className="btn-group">
+              <button
+                className="btn btn-sm btn-outline-secondary"
+                onClick={() => removeFromCart(item.id)}
+              >
+                −
+              </button>
+              <button
+                className="btn btn-sm btn-outline-primary"
+                onClick={() => addToCart(item)}
+              >
+                +
+              </button>
+            </div>
           </li>
         ))}
       </ul>
