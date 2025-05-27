@@ -1,11 +1,12 @@
 import { Navbar, Container, Nav } from 'react-bootstrap';
-import logo from '../assets/logo.png'; // Asegurate de tener el logo en esta ruta
+import logo from '../assets/logo.png';
 
 export default function AppNavbar() {
   return (
     <Navbar bg="light" expand="lg" fixed="top">
       <Container>
-        <Navbar.Brand href="#inicio">
+        {/* Logo + Marca */}
+        <Navbar.Brand href="#inicio" className="d-flex align-items-center">
           <img
             src={logo}
             width="40"
@@ -15,9 +16,11 @@ export default function AppNavbar() {
           />
           Tu Empresa
         </Navbar.Brand>
+
         <Navbar.Toggle aria-controls="navbar-content" />
+        
         <Navbar.Collapse id="navbar-content">
-          <Nav className="ms-auto">
+          <Nav className="mx-auto gap-4"> {/* Centrado con espacio entre ítems */}
             <Nav.Link href="#inicio">Inicio</Nav.Link>
             <Nav.Link href="#productos">Productos</Nav.Link>
             <Nav.Link href="#comocomprar">Cómo comprar</Nav.Link>

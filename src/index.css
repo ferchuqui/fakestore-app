@@ -12,6 +12,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.nav-link:hover {
+  color: #dc3545 !important;
+}
+
+
 
 a {
   font-weight: 500;
@@ -46,6 +51,7 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
