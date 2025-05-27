@@ -1,12 +1,20 @@
+import { Routes, Route } from 'react-router-dom';
+import AppNavbar from './components/Navbar';
 import Home from './pages/Home';
-import AppNavbar from './components/Navbar'; // ← también corregí el path, debe ser en minúsculas
+import CartPage from './pages/CartPage';
+import NotFound from './pages/NotFound';
+import Gracias from './pages/Gracias';
 
 function App() {
   return (
     <>
       <AppNavbar />
-      <h1 className="text-center mb-4">Productos de Primera Puerta a Puerta</h1>
-      <Home />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/gracias" element={<Gracias />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>
   );
 }
