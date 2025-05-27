@@ -1,9 +1,9 @@
-import { Navbar, Container, Nav } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
-
-import logo from '../assets/logo.png';
+import { Navbar, Container, Nav } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Link as ScrollLink } from 'react-scroll';
+import logo from '../assets/logo.png'; // Asegurate de tener este archivo o cambia la ruta
 
 export default function AppNavbar() {
   const { cart } = useContext(CartContext);
@@ -11,6 +11,7 @@ export default function AppNavbar() {
   return (
     <Navbar bg="light" expand="lg" fixed="top">
       <Container>
+        {/* Logo y nombre */}
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
           <img
             src={logo}
@@ -24,12 +25,46 @@ export default function AppNavbar() {
 
         <Navbar.Toggle aria-controls="navbar-content" />
         <Navbar.Collapse id="navbar-content">
+          {/* Ítems con scroll suave */}
           <Nav className="mx-auto gap-4">
-            <Nav.Link href="#inicio">Inicio</Nav.Link>
-            <Nav.Link href="#productos">Productos</Nav.Link>
-            <Nav.Link href="#comocomprar">Cómo comprar</Nav.Link>
-            <Nav.Link href="#contacto">Contacto</Nav.Link>
+            <ScrollLink
+              to="productos"
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={500}
+              className="nav-link"
+              style={{ cursor: 'pointer' }}
+            >
+              Productos
+            </ScrollLink>
+
+            <ScrollLink
+              to="comocomprar"
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={500}
+              className="nav-link"
+              style={{ cursor: 'pointer' }}
+            >
+              Cómo comprar
+            </ScrollLink>
+
+            <ScrollLink
+              to="contacto"
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={500}
+              className="nav-link"
+              style={{ cursor: 'pointer' }}
+            >
+              Contacto
+            </ScrollLink>
           </Nav>
+
+          {/* Carrito */}
           <Nav className="ms-auto">
             <Nav.Link as={Link} to="/cart">
               🛒 Carrito ({cart.length})
