@@ -5,7 +5,7 @@ function App() {
   return (
     <>
       <AppNavbar />
-      <h1 className="text-center mt-4">Productos de Primera Puerta a Puerta</h1>
+      <h1 className="text-center mb-4">Productos de Primera Puerta a Puerta</h1>
       <Home />
     </>
   );

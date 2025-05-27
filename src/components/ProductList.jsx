@@ -12,7 +12,7 @@ export default function ProductList() {
 
   return (
     <div className="container mt-4">
-      <div className="row  ">
+      <div className="row ">
         {products.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}
