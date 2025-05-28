@@ -1,0 +1,1 @@
+const { isAuthenticated, logout } = useContext(AuthContext);
