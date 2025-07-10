@@ -92,6 +92,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <section id="contacto" className="container py-5">
+  <h2 className="mb-4">Contacto</h2>
+  <p>📧 contacto@tuempresa.com</p>
+  <p>📱 +54 9 11 3456 7890</p>
+  <p>🕒 Lunes a Viernes de 9:00 a 18:00 hs</p>
+</section>
     </>
   );
 }

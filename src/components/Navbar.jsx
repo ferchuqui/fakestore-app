@@ -51,17 +51,17 @@ export default function AppNavbar() {
               Cómo comprar
             </ScrollLink>
 
-            <ScrollLink
-              to="contacto"
-              spy={true}
-              smooth={true}
-              offset={-70}
-              duration={500}
-              className="nav-link"
-              style={{ cursor: 'pointer' }}
-            >
-              Contacto
-            </ScrollLink>
+<ScrollLink
+  to="contacto"
+  spy={true}
+  smooth={true}
+  offset={-70}
+  duration={500}
+  className="nav-link"
+  style={{ cursor: 'pointer' }}
+>
+  Contacto
+</ScrollLink>
           </Nav>
 
           {/* Carrito */}

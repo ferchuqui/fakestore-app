@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <CartProvider>
       <HashRouter>
         <App />
-        <Contacto />
+        
       </HashRouter>
     </CartProvider>
   </React.StrictMode>

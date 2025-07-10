@@ -15,7 +15,7 @@ function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/gracias" element={<Gracias />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="/contacto" element={<Contacto />} />
+        
         {/* Aquí puedes agregar más rutas según sea necesario */}
       </Routes>
     </>
