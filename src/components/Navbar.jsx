@@ -83,8 +83,11 @@ export default function AppNavbar() {
             )}
           </Nav>
 
-          {/* Carrito */}
+          {/* Carrito y Login */}
           <Nav className="ms-auto">
+            <Nav.Link as={Link} to="/login" className="me-3">
+              👤 Iniciar Sesión
+            </Nav.Link>
             <Nav.Link as={Link} to="/cart">
               🛒 Carrito ({cart.length})
             </Nav.Link>
