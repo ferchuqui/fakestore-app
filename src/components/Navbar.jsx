@@ -1,12 +1,14 @@
 import { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
-import { Navbar, Container, Nav } from 'react-bootstrap';
+import { AuthContext } from '../context/AuthContext';
+import { Navbar, Container, Nav, Dropdown } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import logo from '../assets/logo.png'; // Asegurate de tener este archivo o cambia la ruta
 
 export default function AppNavbar() {
   const { cart } = useContext(CartContext);
+  const { isAuthenticated, user, logout } = useContext(AuthContext);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -83,11 +85,30 @@ export default function AppNavbar() {
             )}
           </Nav>
 
-          {/* Carrito y Login */}
+          {/* Carrito y Login/Usuario */}
           <Nav className="ms-auto">
-            <Nav.Link as={Link} to="/login" className="me-3">
-              👤 Iniciar Sesión
-            </Nav.Link>
+            {isAuthenticated && user ? (
+              <Dropdown className="me-3">
+                <Dropdown.Toggle variant="outline-primary" id="dropdown-user">
+                  👤 {user.name}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item disabled>
+                    <small className="text-muted">
+                      {user.email}
+                    </small>
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item onClick={logout}>
+                    🚪 Cerrar Sesión
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : (
+              <Nav.Link as={Link} to="/login" className="me-3">
+                👤 Iniciar Sesión
+              </Nav.Link>
+            )}
             <Nav.Link as={Link} to="/cart">
               🛒 Carrito ({cart.length})
             </Nav.Link>
