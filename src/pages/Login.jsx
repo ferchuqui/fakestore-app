@@ -44,7 +44,7 @@ export default function Login() {
     setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Buscar usuario en la lista de usuarios falsos
@@ -53,8 +53,12 @@ export default function Login() {
     );
 
     if (user) {
-      // Login exitoso
-      login(user);
+      // Obtener imagen aleatoria
+      const res = await fetch('https://randomuser.me/api/');
+      const data = await res.json();
+      const picture = data.results[0].picture?.large;
+      // Login exitoso con imagen
+      login({ ...user, picture });
       navigate('/cart');
     } else {
       setError('Email o contraseña incorrectos');

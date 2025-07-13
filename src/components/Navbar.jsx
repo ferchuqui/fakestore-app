@@ -90,7 +90,10 @@ export default function AppNavbar() {
             {isAuthenticated && user ? (
               <Dropdown className="me-3">
                 <Dropdown.Toggle variant="outline-primary" id="dropdown-user">
-                  👤 {user.name}
+                  {user.picture && (
+                    <img src={user.picture} alt="avatar" style={{ width: 32, height: 32, borderRadius: '50%', marginRight: 8, objectFit: 'cover', verticalAlign: 'middle' }} />
+                  )}
+                  {user.name}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item disabled>
