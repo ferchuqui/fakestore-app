@@ -5,12 +5,14 @@ import { Navbar, Container, Nav, Dropdown } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import logo from '../assets/logo.png'; // Asegurate de tener este archivo o cambia la ruta
+import { useState } from 'react';
 
 export default function AppNavbar() {
   const { cart } = useContext(CartContext);
   const { isAuthenticated, user, logout } = useContext(AuthContext);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const [showDropdown, setShowDropdown] = useState(false);
 
   return (
     <Navbar bg="light" expand="lg" fixed="top">
@@ -88,21 +90,39 @@ export default function AppNavbar() {
           {/* Carrito y Login/Usuario */}
           <Nav className="ms-auto">
             {isAuthenticated && user ? (
-              <Dropdown className="me-3">
+              <Dropdown
+                className="me-3"
+                show={showDropdown}
+                onMouseEnter={() => setShowDropdown(true)}
+                onMouseLeave={() => setShowDropdown(false)}
+              >
                 <Dropdown.Toggle variant="outline-primary" id="dropdown-user">
                   {user.picture && (
                     <img src={user.picture} alt="avatar" style={{ width: 32, height: 32, borderRadius: '50%', marginRight: 8, objectFit: 'cover', verticalAlign: 'middle' }} />
                   )}
                   {user.name}
                 </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item disabled>
-                    <small className="text-muted">
-                      {user.email}
-                    </small>
-                  </Dropdown.Item>
+                <Dropdown.Menu style={{ minWidth: 220, padding: 16 }}>
+                  <div className="text-center">
+                    {user.picture && (
+                      <img
+                        src={user.picture}
+                        alt="avatar"
+                        style={{
+                          width: 56,
+                          height: 56,
+                          borderRadius: '50%',
+                          marginBottom: 8,
+                          objectFit: 'cover',
+                          border: '2px solid #007bff'
+                        }}
+                      />
+                    )}
+                    <div style={{ fontWeight: 'bold', fontSize: 16 }}>{user.name}</div>
+                    <div style={{ fontSize: 14, color: '#555' }}>{user.email}</div>
+                  </div>
                   <Dropdown.Divider />
-                  <Dropdown.Item onClick={logout}>
+                  <Dropdown.Item onClick={logout} className="text-center">
                     🚪 Cerrar Sesión
                   </Dropdown.Item>
                 </Dropdown.Menu>

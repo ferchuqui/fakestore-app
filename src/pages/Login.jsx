@@ -53,12 +53,16 @@ export default function Login() {
     );
 
     if (user) {
-      // Obtener imagen aleatoria
+      // Obtener datos completos aleatorios
       const res = await fetch('https://randomuser.me/api/');
       const data = await res.json();
-      const picture = data.results[0].picture?.large;
-      // Login exitoso con imagen
-      login({ ...user, picture });
+      const randomUser = data.results[0];
+      // Login exitoso con datos de randomuser.me
+      login({
+        name: `${randomUser.name.first} ${randomUser.name.last}`,
+        email: randomUser.email,
+        picture: randomUser.picture.large
+      });
       navigate('/cart');
     } else {
       setError('Email o contraseña incorrectos');
