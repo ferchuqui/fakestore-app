@@ -1,12 +1,14 @@
 import { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
 import { Navbar, Container, Nav } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import logo from '../assets/logo.png'; // Asegurate de tener este archivo o cambia la ruta
 
 export default function AppNavbar() {
   const { cart } = useContext(CartContext);
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   return (
     <Navbar bg="light" expand="lg" fixed="top">
@@ -26,41 +28,59 @@ export default function AppNavbar() {
         <Navbar.Collapse id="navbar-content">
           {/* Ítems con scroll suave */}
           <Nav className="mx-auto gap-4">
-            <ScrollLink
-              to="productos"
-              spy={true}
-              smooth={true}
-              offset={-70}
-              duration={500}
-              className="nav-link"
-              style={{ cursor: 'pointer' }}
-            >
-              Productos
-            </ScrollLink>
+            {isHomePage ? (
+              <ScrollLink
+                to="productos"
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                className="nav-link"
+                style={{ cursor: 'pointer' }}
+              >
+                Productos
+              </ScrollLink>
+            ) : (
+              <Nav.Link as={Link} to="/#productos">
+                Productos
+              </Nav.Link>
+            )}
 
-            <ScrollLink
-              to="comocomprar"
-              spy={true}
-              smooth={true}
-              offset={-70}
-              duration={500}
-              className="nav-link"
-              style={{ cursor: 'pointer' }}
-            >
-              Cómo comprar
-            </ScrollLink>
+            {isHomePage ? (
+              <ScrollLink
+                to="comocomprar"
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                className="nav-link"
+                style={{ cursor: 'pointer' }}
+              >
+                Cómo comprar
+              </ScrollLink>
+            ) : (
+              <Nav.Link as={Link} to="/#comocomprar">
+                Cómo comprar
+              </Nav.Link>
+            )}
 
-<ScrollLink
-  to="contacto"
-  spy={true}
-  smooth={true}
-  offset={-70}
-  duration={500}
-  className="nav-link"
-  style={{ cursor: 'pointer' }}
->
-  Contacto
-</ScrollLink>
+            {isHomePage ? (
+              <ScrollLink
+                to="contacto"
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                className="nav-link"
+                style={{ cursor: 'pointer' }}
+              >
+                Contacto
+              </ScrollLink>
+            ) : (
+              <Nav.Link as={Link} to="/#contacto">
+                Contacto
+              </Nav.Link>
+            )}
           </Nav>
 
           {/* Carrito */}
