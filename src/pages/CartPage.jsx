@@ -1,9 +1,11 @@
 import { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
+import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function CartPage() {
   const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -20,6 +22,8 @@ export default function CartPage() {
       </div>
     );
   }
+
+  const usuarioLogueado = !!user;
 
   return (
     <div className="container mt-5">
@@ -79,9 +83,20 @@ export default function CartPage() {
           Vaciar carrito
         </button>
 
-        <button className="btn btn-primary" onClick={handleCheckout}>
-          Finalizar compra
-        </button>
+        <div className="d-flex flex-column align-items-end">
+          <button
+            className="btn btn-primary"
+            onClick={handleCheckout}
+            disabled={!usuarioLogueado}
+          >
+            Finalizar compra
+          </button>
+          {!usuarioLogueado && (
+            <div className="mt-2 text-danger" style={{ maxWidth: 220 }}>
+              <strong>El usuario debe estar logueado para poder comprar.</strong>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

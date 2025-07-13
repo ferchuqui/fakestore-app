@@ -9,17 +9,20 @@ const fakeUsers = [
   {
     email: 'admin@test.com',
     password: 'admin123',
-    name: 'Administrador'
+    name: 'Administrador',
+    habilitado: true
   },
   {
     email: 'usuario@test.com',
     password: 'user123',
-    name: 'Usuario Normal'
+    name: 'Usuario Normal',
+    habilitado: false
   },
   {
     email: 'cliente@test.com',
     password: 'cliente123',
-    name: 'Cliente Premium'
+    name: 'Cliente Premium',
+    habilitado: true
   }
 ];
 
