@@ -20,8 +20,7 @@ export default function AppNavbar() {
             className="d-inline-block align-top me-2"
             alt="Logo"
           />
-          Tu Empresa
-        </Navbar.Brand>
+          2026 - El futuro llego para quedarse        </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="navbar-content" />
         <Navbar.Collapse id="navbar-content">
