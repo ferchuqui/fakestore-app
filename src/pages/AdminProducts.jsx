@@ -95,7 +95,18 @@ export default function AdminProducts() {
     saveProducts(newProducts);
   };
 
-  // Eliminar la función handleDescargarProductos y el botón correspondiente
+  const handleDescargarProductos = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0');
+      const data = await res.json();
+      saveProducts(data);
+      alert('¡Productos descargados y guardados en localStorage!');
+    } catch {
+      setError('Error al descargar productos');
+    }
+    setLoading(false);
+  };
 
   // Paginación frontend
   const indexOfLast = currentPage * itemsPerPage;
@@ -112,6 +123,9 @@ export default function AdminProducts() {
     5: 'Others'
   };
 
+  const productosLocales = JSON.parse(localStorage.getItem('products') || '[]');
+  const productosDescargados = productosLocales.length > 0;
+
   if (!isAuthenticated) {
     return <Container className="mt-5"><Alert variant="warning">Debes iniciar sesión para ver los productos.</Alert></Container>;
   }
@@ -122,9 +136,16 @@ export default function AdminProducts() {
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
       {user?.role === 'admin' && (
-        <Button className="mb-3" onClick={() => handleShowModal()}>
-          Crear producto
-        </Button>
+        <>
+          {!productosDescargados && (
+            <Button className="mb-3 me-2" variant="success" onClick={handleDescargarProductos}>
+              Descargar y guardar productos
+            </Button>
+          )}
+          <Button className="mb-3" onClick={() => handleShowModal()}>
+            Crear producto
+          </Button>
+        </>
       )}
       {loading ? <Spinner animation="border" /> : (
         <>
