@@ -8,9 +8,9 @@ export default function ProductList() {
   const itemsPerPage = 6;
 
   useEffect(() => {
-    fetch('https://api.escuelajs.co/api/v1/products')
+    fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0')
       .then(res => res.json())
-      .then(data => setProducts(data.slice(0, 30))); // ajusta el límite si querés más productos
+      .then(data => setProducts(data));
   }, []);
 
   const totalPages = Math.ceil(products.length / itemsPerPage);

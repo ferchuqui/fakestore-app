@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Gracias from './pages/Gracias';
 import Contacto from './pages/Contacto';
+import AdminProducts from './pages/AdminProducts';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/gracias" element={<Gracias />} />
         <Route path="/contacto" element={<Contacto />} />
+        <Route path="/admin-products" element={<AdminProducts />} />
         <Route path="*" element={<NotFound />} />
         
         {/* Aquí puedes agregar más rutas según sea necesario */}

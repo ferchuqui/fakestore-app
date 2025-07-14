@@ -132,6 +132,11 @@ export default function AppNavbar() {
                 👤 Iniciar Sesión
               </Nav.Link>
             )}
+            {user?.role === 'admin' && (
+              <Nav.Link as={Link} to="/admin-products" className="me-3">
+                🛠️ Admin Productos
+              </Nav.Link>
+            )}
             <Nav.Link as={Link} to="/cart">
               🛒 Carrito ({cart.length})
             </Nav.Link>

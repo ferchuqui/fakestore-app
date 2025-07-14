@@ -57,11 +57,14 @@ export default function Login() {
       const res = await fetch('https://randomuser.me/api/');
       const data = await res.json();
       const randomUser = data.results[0];
-      // Login exitoso con datos de randomuser.me
+      // Determinar el rol
+      const role = user.email === 'admin@test.com' ? 'admin' : 'user';
+      // Login exitoso con datos de randomuser.me y rol
       login({
         name: `${randomUser.name.first} ${randomUser.name.last}`,
         email: randomUser.email,
-        picture: randomUser.picture.large
+        picture: randomUser.picture.large,
+        role
       });
       navigate('/cart');
     } else {
