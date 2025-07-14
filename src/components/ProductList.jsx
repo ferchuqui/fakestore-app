@@ -1,19 +1,36 @@
 import { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import Pagination from 'react-bootstrap/Pagination';
+import { Spinner } from 'react-bootstrap';
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+  const [loading, setLoading] = useState(false);
 
-  // Actualizar automáticamente cuando cambian los productos en localStorage
+  // Descargar productos automáticamente si localStorage está vacío
   useEffect(() => {
     const updateProducts = () => {
       const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
       setProducts(localProducts);
     };
-    updateProducts();
+    const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
+    if (localProducts.length === 0) {
+      setLoading(true);
+      fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0')
+        .then(res => res.json())
+        .then(data => {
+          localStorage.setItem('products', JSON.stringify(data));
+          setProducts(data);
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    } else {
+      setProducts(localProducts);
+    }
     window.addEventListener('storage', updateProducts);
     return () => window.removeEventListener('storage', updateProducts);
   }, []);
@@ -23,6 +40,15 @@ export default function ProductList() {
   const currentProducts = products.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
+  if (loading) {
+    return (
+      <div className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '400px' }}>
+        <Spinner animation="border" role="status" />
+        <span className="mt-3 fs-4">Cargando productos mágicos...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-4" id="productos">
