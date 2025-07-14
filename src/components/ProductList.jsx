@@ -136,9 +136,28 @@ export default function ProductList() {
   };
 
   if (magic) {
+    // Emoji de auriculares para la animación
+    const magicEmoji = '🎧';
     return (
       <div className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '400px' }}>
-        <div className="spinner-border text-primary mb-3" style={{ width: '4rem', height: '4rem', animation: 'spin 1s linear infinite' }} role="status"></div>
+        <span
+          style={{
+            display: 'inline-block',
+            fontSize: '4rem',
+            animation: 'spin-magic 1.2s linear infinite',
+            marginBottom: '1rem',
+            filter: 'drop-shadow(0 0 8px #a0e7ff) drop-shadow(0 0 16px #fff)'
+          }}
+          aria-label="auriculares"
+        >
+          {magicEmoji}
+        </span>
+        <style>{`
+          @keyframes spin-magic {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
         <span className="mt-3 fs-3 fw-bold text-primary">¡La magia comienza!</span>
       </div>
     );
