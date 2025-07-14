@@ -25,8 +25,23 @@ export default function AdminProducts() {
   useEffect(() => {
     setLoading(true);
     const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
-    setProducts(localProducts);
-    setLoading(false);
+    if (localProducts.length === 0) {
+      // Descargar automáticamente si no hay productos
+      fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0')
+        .then(res => res.json())
+        .then(data => {
+          saveProducts(data);
+          setProducts(data);
+          setLoading(false);
+        })
+        .catch(() => {
+          setError('Error al descargar productos');
+          setLoading(false);
+        });
+    } else {
+      setProducts(localProducts);
+      setLoading(false);
+    }
   }, []);
 
   // Guardar productos en localStorage
