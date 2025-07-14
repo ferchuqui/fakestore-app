@@ -128,41 +128,43 @@ export default function AdminProducts() {
       )}
       {loading ? <Spinner animation="border" /> : (
         <>
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Miniatura</th>
-              <th>Título</th>
-              <th>Precio</th>
-              <th>Descripción</th>
-              <th>Categoría</th>
-              <th>Stock</th>
-              {user?.role === 'admin' && <th>Acciones</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {currentProducts.map(product => (
-              <tr key={product.id}>
-                <td>{product.id}</td>
-                <td>
-                  <img src={product.images && product.images[0] ? product.images[0] : 'https://placehold.co/60x40?text=Sin+Imagen'} alt="miniatura" style={{ width: 60, height: 40, objectFit: 'cover', borderRadius: 4 }} />
-                </td>
-                <td>{product.title}</td>
-                <td>${product.price}</td>
-                <td>{product.description}</td>
-                <td>{categoryNames[product.categoryId] || product.categoryId}</td>
-                <td>{product.stock ?? 0}</td>
-                {user?.role === 'admin' && (
-                  <td>
-                    <Button size="sm" variant="warning" onClick={() => handleShowModal(product)}>Editar</Button>{' '}
-                    <Button size="sm" variant="danger" onClick={() => handleDelete(product.id)}>Borrar</Button>
-                  </td>
-                )}
+        <div style={{ minHeight: '700px', transition: 'min-height 0.2s' }}>
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Miniatura</th>
+                <th>Título</th>
+                <th>Precio</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                {user?.role === 'admin' && <th>Acciones</th>}
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {currentProducts.map(product => (
+                <tr key={product.id}>
+                  <td>{product.id}</td>
+                  <td>
+                    <img src={product.images && product.images[0] ? product.images[0] : 'https://placehold.co/60x40?text=Sin+Imagen'} alt="miniatura" style={{ width: 60, height: 40, objectFit: 'cover', borderRadius: 4 }} />
+                  </td>
+                  <td>{product.title}</td>
+                  <td>${product.price}</td>
+                  <td>{product.description}</td>
+                  <td>{categoryNames[product.categoryId] || product.categoryId}</td>
+                  <td>{product.stock ?? 0}</td>
+                  {user?.role === 'admin' && (
+                    <td>
+                      <Button size="sm" variant="warning" onClick={() => handleShowModal(product)}>Editar</Button>{' '}
+                      <Button size="sm" variant="danger" onClick={() => handleDelete(product.id)}>Borrar</Button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
         {/* Paginación */}
         <Pagination className="justify-content-center">
           <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />

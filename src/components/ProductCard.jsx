@@ -32,7 +32,26 @@ export default function ProductCard({ product }) {
   return (
     <div className="col-md-4 mb-4">
       <div className="card h-100">
-        <img src={imageUrl} className="card-img-top" alt={product.title} style={{ width: 300, height: 200, objectFit: 'cover', borderRadius: 8, margin: '0 auto' }} />
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
+          <img src={imageUrl} className="card-img-top" alt={product.title} style={{ width: 300, height: 200, objectFit: 'cover', borderRadius: 8, margin: '0 auto' }} />
+          {stock === 0 && (
+            <span style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%) rotate(-20deg)',
+              color: 'red',
+              fontWeight: 'bold',
+              fontSize: 40,
+              background: 'rgba(255,255,255,0.7)',
+              padding: '8px 32px',
+              borderRadius: 12,
+              zIndex: 2
+            }}>
+              AGOTADO
+            </span>
+          )}
+        </div>
         <div className="card-body">
           <h5 className="card-title">{product.title}</h5>
           <p className="card-text">${product.price}</p>
@@ -62,7 +81,26 @@ export default function ProductCard({ product }) {
           <Modal.Title>{product.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <img src={imageUrl} alt={product.title} style={{ width: 300, height: 200, objectFit: 'cover', borderRadius: 8, marginBottom: 16 }} />
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <img src={imageUrl} alt={product.title} style={{ width: 300, height: 200, objectFit: 'cover', borderRadius: 8, marginBottom: 16 }} />
+            {stock === 0 && (
+              <span style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%) rotate(-20deg)',
+                color: 'red',
+                fontWeight: 'bold',
+                fontSize: 40,
+                background: 'rgba(255,255,255,0.7)',
+                padding: '8px 32px',
+                borderRadius: 12,
+                zIndex: 2
+              }}>
+                AGOTADO
+              </span>
+            )}
+          </div>
           <div className="mb-2"><strong>ID:</strong> {product.id}</div>
           <div className="mb-2"><strong>Precio:</strong> ${product.price}</div>
           <div className="mb-2">

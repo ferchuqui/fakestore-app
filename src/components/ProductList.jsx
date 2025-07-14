@@ -26,7 +26,10 @@ export default function ProductList() {
 
   return (
     <div className="container mt-4" id="productos">
-      <div className="row">
+      <div
+        className="row"
+        style={{ minHeight: '700px', transition: 'min-height 0.2s' }}
+      >
         {currentProducts.map(product => (
           <ProductCard key={product.id} product={{...product, showId: true}} />
         ))}
