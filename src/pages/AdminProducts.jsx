@@ -14,7 +14,8 @@ export default function AdminProducts() {
     price: '',
     description: '',
     categoryId: 1,
-    image: ''
+    image: '',
+    stock: 10
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -42,16 +43,17 @@ export default function AdminProducts() {
       price: product.price,
       description: product.description,
       categoryId: product.categoryId || 1,
-      image: product.images ? product.images[0] : ''
+      image: product.images ? product.images[0] : '',
+      stock: typeof product.stock === 'number' ? product.stock : 10
     } : {
-      title: '', price: '', description: '', categoryId: 1, image: ''
+      title: '', price: '', description: '', categoryId: 1, image: '', stock: 10
     });
     setShowModal(true);
   };
   const handleCloseModal = () => {
     setShowModal(false);
     setEditProduct(null);
-    setForm({ title: '', price: '', description: '', categoryId: 1, image: '' });
+    setForm({ title: '', price: '', description: '', categoryId: 1, image: '', stock: 10 });
   };
   const handleChange = e => {
     const { name, value } = e.target;
@@ -66,7 +68,7 @@ export default function AdminProducts() {
     if (editProduct) {
       newProducts = newProducts.map(p =>
         p.id === editProduct.id
-          ? { ...p, ...form, price: Number(form.price), categoryId: Number(form.categoryId), images: [form.image || "https://placehold.co/300x200?text=Sin+Imagen"] }
+          ? { ...p, ...form, price: Number(form.price), categoryId: Number(form.categoryId), stock: Number(form.stock), images: [form.image || "https://placehold.co/300x200?text=Sin+Imagen"] }
           : p
       );
     } else {
@@ -76,6 +78,7 @@ export default function AdminProducts() {
         ...form,
         price: Number(form.price),
         categoryId: Number(form.categoryId),
+        stock: Number(form.stock),
         images: [form.image || "https://placehold.co/300x200?text=Sin+Imagen"]
       });
     }
@@ -134,6 +137,7 @@ export default function AdminProducts() {
               <th>Precio</th>
               <th>Descripción</th>
               <th>Categoría</th>
+              <th>Stock</th>
               {user?.role === 'admin' && <th>Acciones</th>}
             </tr>
           </thead>
@@ -148,6 +152,7 @@ export default function AdminProducts() {
                 <td>${product.price}</td>
                 <td>{product.description}</td>
                 <td>{categoryNames[product.categoryId] || product.categoryId}</td>
+                <td>{product.stock ?? 0}</td>
                 {user?.role === 'admin' && (
                   <td>
                     <Button size="sm" variant="warning" onClick={() => handleShowModal(product)}>Editar</Button>{' '}
@@ -205,6 +210,10 @@ export default function AdminProducts() {
                 <option value={4}>Shoes</option>
                 <option value={5}>Others</option>
               </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Cantidad de stock</Form.Label>
+              <Form.Control name="stock" type="number" min="0" value={form.stock} onChange={handleChange} required />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Imagen (archivo)</Form.Label>
