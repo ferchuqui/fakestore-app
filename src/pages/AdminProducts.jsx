@@ -18,6 +18,7 @@ export default function AdminProducts() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [success, setSuccess] = useState('');
 
   // Leer productos desde localStorage
   useEffect(() => {
@@ -79,6 +80,8 @@ export default function AdminProducts() {
       });
     }
     saveProducts(newProducts);
+    setSuccess('Producto cargado con éxito');
+    setTimeout(() => setSuccess(''), 2500);
     handleCloseModal();
   };
 
@@ -114,6 +117,7 @@ export default function AdminProducts() {
     <Container className="mt-5">
       <h2>Administración de Productos</h2>
       {error && <Alert variant="danger">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
       {user?.role === 'admin' && (
         <Button className="mb-3" onClick={() => handleShowModal()}>
           Crear producto
@@ -125,6 +129,7 @@ export default function AdminProducts() {
           <thead>
             <tr>
               <th>ID</th>
+              <th>Miniatura</th>
               <th>Título</th>
               <th>Precio</th>
               <th>Descripción</th>
@@ -136,6 +141,9 @@ export default function AdminProducts() {
             {currentProducts.map(product => (
               <tr key={product.id}>
                 <td>{product.id}</td>
+                <td>
+                  <img src={product.images && product.images[0] ? product.images[0] : 'https://placehold.co/60x40?text=Sin+Imagen'} alt="miniatura" style={{ width: 60, height: 40, objectFit: 'cover', borderRadius: 4 }} />
+                </td>
                 <td>{product.title}</td>
                 <td>${product.price}</td>
                 <td>{product.description}</td>
