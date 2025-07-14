@@ -51,6 +51,9 @@ export default function ProductCard({ product }) {
               ✅ <strong>{product.title}</strong> se ha cargado al carrito.
             </div>
           )}
+          {product.showId && (
+            <div className="text-muted" style={{ fontSize: 13, marginBottom: 4 }}>ID: {product.id}</div>
+          )}
         </div>
       </div>
 
@@ -60,6 +63,7 @@ export default function ProductCard({ product }) {
         </Modal.Header>
         <Modal.Body className="text-center">
           <img src={imageUrl} alt={product.title} style={{ width: 300, height: 200, objectFit: 'cover', borderRadius: 8, marginBottom: 16 }} />
+          <div className="mb-2"><strong>ID:</strong> {product.id}</div>
           <div className="mb-2"><strong>Precio:</strong> ${product.price}</div>
           <div className="mb-2">
             <strong>Stock:</strong> {stock === 0 ? <span style={{color: 'red'}}>Agotado</span> : stock}

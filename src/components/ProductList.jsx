@@ -7,10 +7,15 @@ export default function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
+  // Actualizar automáticamente cuando cambian los productos en localStorage
   useEffect(() => {
-    fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0')
-      .then(res => res.json())
-      .then(data => setProducts(data));
+    const updateProducts = () => {
+      const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
+      setProducts(localProducts);
+    };
+    updateProducts();
+    window.addEventListener('storage', updateProducts);
+    return () => window.removeEventListener('storage', updateProducts);
   }, []);
 
   const totalPages = Math.ceil(products.length / itemsPerPage);
@@ -23,7 +28,7 @@ export default function ProductList() {
     <div className="container mt-4" id="productos">
       <div className="row">
         {currentProducts.map(product => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={{...product, showId: true}} />
         ))}
       </div>
 
