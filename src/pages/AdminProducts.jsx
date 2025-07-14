@@ -14,31 +14,24 @@ export default function AdminProducts() {
     price: '',
     description: '',
     categoryId: 1,
-    images: ['https://placeimg.com/640/480/any']
+    image: ''
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Obtener productos
+  // Leer productos desde localStorage
   useEffect(() => {
     setLoading(true);
-    fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0')
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Error al cargar productos');
-        setLoading(false);
-      });
+    const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
+    setProducts(localProducts);
+    setLoading(false);
   }, []);
 
-  // Calcular productos a mostrar
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentProducts = products.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  // Guardar productos en localStorage
+  const saveProducts = (prods) => {
+    setProducts(prods);
+    localStorage.setItem('products', JSON.stringify(prods));
+  };
 
   // Handlers para crear/editar
   const handleShowModal = (product = null) => {
@@ -47,61 +40,70 @@ export default function AdminProducts() {
       title: product.title,
       price: product.price,
       description: product.description,
-      categoryId: product.category?.id || 1,
-      images: product.images || ['https://placeimg.com/640/480/any']
+      categoryId: product.categoryId || 1,
+      image: product.images ? product.images[0] : ''
     } : {
-      title: '', price: '', description: '', categoryId: 1, images: ['https://placeimg.com/640/480/any']
+      title: '', price: '', description: '', categoryId: 1, image: ''
     });
     setShowModal(true);
   };
   const handleCloseModal = () => {
     setShowModal(false);
     setEditProduct(null);
-    setForm({ title: '', price: '', description: '', categoryId: 1, images: ['https://placeimg.com/640/480/any'] });
+    setForm({ title: '', price: '', description: '', categoryId: 1, image: '' });
   };
   const handleChange = e => {
     const { name, value } = e.target;
     setForm(f => ({ ...f, [name]: value }));
   };
 
-  // Crear o editar producto
-  const handleSubmit = async e => {
+  // Crear o editar producto en localStorage
+  const handleSubmit = e => {
     e.preventDefault();
     setError('');
-    const method = editProduct ? 'PUT' : 'POST';
-    const url = editProduct
-      ? `https://api.escuelajs.co/api/v1/products/${editProduct.id}`
-      : 'https://api.escuelajs.co/api/v1/products';
-    const body = JSON.stringify({
-      ...form,
-      price: Number(form.price),
-      images: [form.images[0]]
-    });
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body
+    let newProducts = [...products];
+    if (editProduct) {
+      newProducts = newProducts.map(p =>
+        p.id === editProduct.id
+          ? { ...p, ...form, price: Number(form.price), categoryId: Number(form.categoryId), images: [form.image || "https://placehold.co/300x200?text=Sin+Imagen"] }
+          : p
+      );
+    } else {
+      const newId = newProducts.length > 0 ? Math.max(...newProducts.map(p => p.id)) + 1 : 1;
+      newProducts.push({
+        id: newId,
+        ...form,
+        price: Number(form.price),
+        categoryId: Number(form.categoryId),
+        images: [form.image || "https://placehold.co/300x200?text=Sin+Imagen"]
       });
-      if (!res.ok) throw new Error('Error al guardar producto');
-      handleCloseModal();
-      // Refrescar productos
-      const updated = await fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0').then(r => r.json());
-      setProducts(updated);
-    } catch {
-      setError('Error al guardar producto');
     }
+    saveProducts(newProducts);
+    handleCloseModal();
   };
 
-  // Borrar producto
-  const handleDelete = async id => {
+  // Borrar producto en localStorage
+  const handleDelete = id => {
     if (!window.confirm('¿Seguro que deseas borrar este producto?')) return;
-    try {
-      await fetch(`https://api.escuelajs.co/api/v1/products/${id}`, { method: 'DELETE' });
-      setProducts(products.filter(p => p.id !== id));
-    } catch {
-      setError('Error al borrar producto');
-    }
+    const newProducts = products.filter(p => p.id !== id);
+    saveProducts(newProducts);
+  };
+
+  // Eliminar la función handleDescargarProductos y el botón correspondiente
+
+  // Paginación frontend
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentProducts = products.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  // Función auxiliar para mostrar el nombre de la categoría
+  const categoryNames = {
+    1: 'Clothes',
+    2: 'Electronics',
+    3: 'Furniture',
+    4: 'Shoes',
+    5: 'Others'
   };
 
   if (!isAuthenticated) {
@@ -113,7 +115,9 @@ export default function AdminProducts() {
       <h2>Administración de Productos</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       {user?.role === 'admin' && (
-        <Button className="mb-3" onClick={() => handleShowModal()}>Crear producto</Button>
+        <Button className="mb-3" onClick={() => handleShowModal()}>
+          Crear producto
+        </Button>
       )}
       {loading ? <Spinner animation="border" /> : (
         <>
@@ -121,7 +125,6 @@ export default function AdminProducts() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Imagen</th>
               <th>Título</th>
               <th>Precio</th>
               <th>Descripción</th>
@@ -133,11 +136,10 @@ export default function AdminProducts() {
             {currentProducts.map(product => (
               <tr key={product.id}>
                 <td>{product.id}</td>
-                <td><img src={product.images?.[0]} alt={product.title} style={{ width: 50, height: 50, objectFit: 'cover' }} /></td>
                 <td>{product.title}</td>
                 <td>${product.price}</td>
                 <td>{product.description}</td>
-                <td>{product.category?.name}</td>
+                <td>{categoryNames[product.categoryId] || product.categoryId}</td>
                 {user?.role === 'admin' && (
                   <td>
                     <Button size="sm" variant="warning" onClick={() => handleShowModal(product)}>Editar</Button>{' '}
@@ -187,8 +189,34 @@ export default function AdminProducts() {
               <Form.Control name="description" value={form.description} onChange={handleChange} required />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Imagen (URL)</Form.Label>
-              <Form.Control name="images" value={form.images[0]} onChange={e => setForm(f => ({ ...f, images: [e.target.value] }))} required />
+              <Form.Label>Categoría</Form.Label>
+              <Form.Select name="categoryId" value={form.categoryId} onChange={handleChange} required>
+                <option value={1}>Clothes</option>
+                <option value={2}>Electronics</option>
+                <option value={3}>Furniture</option>
+                <option value={4}>Shoes</option>
+                <option value={5}>Others</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Imagen (archivo)</Form.Label>
+              <Form.Control
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setForm(f => ({ ...f, image: reader.result }));
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+              />
+              {form.image && (
+                <img src={form.image} alt="preview" style={{ width: 100, marginTop: 10, borderRadius: 8 }} />
+              )}
             </Form.Group>
             <Button type="submit" variant="primary">Guardar</Button>
           </Form>
