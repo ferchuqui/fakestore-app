@@ -63,9 +63,9 @@ export default function ProductList() {
     return () => window.removeEventListener('storage', updateProducts);
   }, []);
 
-  // Filtrar productos por búsqueda (título, descripción o categoría)
+  // Filtrar productos por búsqueda (título, descripción, categoría, id o comentarios)
   const filteredProducts = products.filter(product => {
-    const text = `${product.title} ${product.description} ${product.categoryId}`.toLowerCase();
+    const text = `${product.title} ${product.description} ${product.categoryId} ${product.id} ${(product.comments || '')}`.toLowerCase();
     return text.includes(search.toLowerCase());
   });
 
@@ -154,7 +154,7 @@ export default function ProductList() {
           <input
             type="text"
             className="form-control"
-            placeholder="Buscar productos por título, descripción o categoría..."
+            placeholder="Buscar productos por título, descripción, categoría, ID o comentarios..."
             value={search}
             onChange={e => {
               setSearch(e.target.value);
@@ -162,6 +162,20 @@ export default function ProductList() {
             }}
           />
         </div>
+      </div>
+      {/* Paginación arriba del grid */}
+      <div className="d-flex justify-content-center mb-4">
+        <Pagination>
+          {[...Array(totalPages)].map((_, i) => (
+            <Pagination.Item
+              key={i + 1}
+              active={i + 1 === currentPage}
+              onClick={() => handlePageChange(i + 1)}
+            >
+              {i + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
       </div>
       <div
         className="row"
@@ -185,21 +199,6 @@ export default function ProductList() {
             </div>
           ))
         )}
-      </div>
-
-      {/* Paginación */}
-      <div className="d-flex justify-content-center mt-4">
-        <Pagination>
-          {[...Array(totalPages)].map((_, i) => (
-            <Pagination.Item
-              key={i + 1}
-              active={i + 1 === currentPage}
-              onClick={() => handlePageChange(i + 1)}
-            >
-              {i + 1}
-            </Pagination.Item>
-          ))}
-        </Pagination>
       </div>
 
       {/* Modal para editar */}
