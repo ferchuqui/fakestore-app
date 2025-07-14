@@ -8,6 +8,7 @@ export default function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   // Descargar productos automáticamente si localStorage está vacío
   useEffect(() => {
@@ -18,14 +19,26 @@ export default function ProductList() {
     const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
     if (localProducts.length === 0) {
       setLoading(true);
+      setError('');
       fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0')
         .then(res => res.json())
         .then(data => {
-          localStorage.setItem('products', JSON.stringify(data));
-          setProducts(data);
+          // Normalizar productos
+          const normalized = data.map((p, idx) => ({
+            id: p.id ?? idx + 1,
+            title: p.title ?? 'Sin título',
+            price: typeof p.price === 'number' ? p.price : 0,
+            description: p.description ?? '',
+            categoryId: p.categoryId ?? (p.category && p.category.id) ?? 1,
+            images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [p.image || 'https://placehold.co/300x200?text=Sin+Imagen'],
+            stock: typeof p.stock === 'number' ? p.stock : 10
+          }));
+          localStorage.setItem('products', JSON.stringify(normalized));
+          setProducts(normalized);
           setLoading(false);
         })
         .catch(() => {
+          setError('Error al descargar productos. Intenta recargar la página.');
           setLoading(false);
         });
     } else {
@@ -46,6 +59,16 @@ export default function ProductList() {
       <div className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '400px' }}>
         <Spinner animation="border" role="status" />
         <span className="mt-3 fs-4">Cargando productos mágicos...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mt-4">
+        <div className="alert alert-danger text-center" role="alert">
+          {error}
+        </div>
       </div>
     );
   }
