@@ -10,6 +10,7 @@ export default function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const [loading, setLoading] = useState(false);
+  const [magic, setMagic] = useState(false);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const { user, isAuthenticated } = useContext(AuthContext);
@@ -32,33 +33,40 @@ export default function ProductList() {
       setProducts(localProducts);
     };
     const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
-    if (localProducts.length === 0) {
-      setLoading(true);
-      setError('');
-      fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0')
-        .then(res => res.json())
-        .then(data => {
-          // Normalizar productos
-          const normalized = data.map((p, idx) => ({
-            id: p.id ?? idx + 1,
-            title: p.title ?? 'Sin título',
-            price: typeof p.price === 'number' ? p.price : 0,
-            description: p.description ?? '',
-            categoryId: p.categoryId ?? (p.category && p.category.id) ?? 1,
-            images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [p.image || 'https://placehold.co/300x200?text=Sin+Imagen'],
-            stock: typeof p.stock === 'number' ? p.stock : 10
-          }));
-          localStorage.setItem('products', JSON.stringify(normalized));
-          setProducts(normalized);
-          setLoading(false);
-        })
-        .catch(() => {
-          setError('Error al descargar productos. Intenta recargar la página.');
-          setLoading(false);
-        });
-    } else {
-      setProducts(localProducts);
-    }
+    setMagic(true);
+    setLoading(true);
+    setTimeout(() => {
+      if (localProducts.length === 0) {
+        setError('');
+        fetch('https://api.escuelajs.co/api/v1/products?limit=100&offset=0')
+          .then(res => res.json())
+          .then(data => {
+            // Normalizar productos
+            const normalized = data.map((p, idx) => ({
+              id: p.id ?? idx + 1,
+              title: p.title ?? 'Sin título',
+              price: typeof p.price === 'number' ? p.price : 0,
+              description: p.description ?? '',
+              categoryId: p.categoryId ?? (p.category && p.category.id) ?? 1,
+              images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [p.image || 'https://placehold.co/300x200?text=Sin+Imagen'],
+              stock: typeof p.stock === 'number' ? p.stock : 10
+            }));
+            localStorage.setItem('products', JSON.stringify(normalized));
+            setProducts(normalized);
+            setLoading(false);
+            setMagic(false);
+          })
+          .catch(() => {
+            setError('Error al descargar productos. Intenta recargar la página.');
+            setLoading(false);
+            setMagic(false);
+          });
+      } else {
+        setProducts(localProducts);
+        setLoading(false);
+        setMagic(false);
+      }
+    }, 2000);
     window.addEventListener('storage', updateProducts);
     return () => window.removeEventListener('storage', updateProducts);
   }, []);
@@ -126,6 +134,15 @@ export default function ProductList() {
     setSuccess('Producto borrado con éxito');
     setTimeout(() => setSuccess(''), 2500);
   };
+
+  if (magic) {
+    return (
+      <div className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '400px' }}>
+        <div className="spinner-border text-primary mb-3" style={{ width: '4rem', height: '4rem', animation: 'spin 1s linear infinite' }} role="status"></div>
+        <span className="mt-3 fs-3 fw-bold text-primary">¡La magia comienza!</span>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
